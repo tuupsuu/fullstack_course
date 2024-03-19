@@ -2,10 +2,14 @@ import { useState } from 'react'
 
 const Display = props => <div>{props.text} {props.value}</div>
 
-const Statistics = ({good, neutral, bad}) => {
+const Statistics = ({ good, neutral, bad }) => {
   const all = good + neutral + bad
+  if (all == 0) return (<div>No feedback given</div>)
   return (
     <>
+      <Display value={good} text='good' />
+      <Display value={neutral} text='neutral' />
+      <Display value={bad} text='bad' />
       <Display value={all} text='all' />
       <Average good={good} neutral={neutral} bad={bad} />
       <Positive value={all} positive={good} />
@@ -45,9 +49,6 @@ const App = () => {
       <Button handleClick={() => setNeutral(neutral + 1)} text="neutral" />
       <Button handleClick={() => setBad(bad + 1)} text="bad" />
       <h2>statistics</h2>
-      <Display value={good} text='good' />
-      <Display value={neutral} text='neutral' />
-      <Display value={bad} text='bad' />
 
       <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
