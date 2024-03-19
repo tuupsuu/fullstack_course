@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const StatisticLine = props => <div>{props.text} {props.value} {props.pros}</div>
+const StatisticLine = props => <tr><td>{props.text}</td> <td>{props.value}</td> <td>{props.pros}</td></tr>
 
 const Statistics = ({ good, neutral, bad }) => {
   const all = good + neutral + bad
