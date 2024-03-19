@@ -1,5 +1,15 @@
 import { useState } from 'react'
 
+const Text = props => {
+  return (
+    <>
+      <div>{props.anec}</div>
+      <div>has {props.vote} votes</div>
+    </>
+  )
+}
+
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -11,19 +21,38 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when dianosing patients.',
     'The only way to go fast, is to go well.'
   ]
+  let votes = [0, 0, 0, 0, 0, 0, 0, 0]
 
   const [selected, setSelected] = useState(0)
+  const [counters, setCounters] = useState(votes)
+
+  function handleIncrementClick(index) {
+    const nextCounters = counters.map((c, i) => {
+      if (i === index) {
+        // Increment the clicked counter
+        return c + 1;
+      } else {
+        // The rest haven't changed
+        return c;
+      }
+    });
+    setCounters(nextCounters);
+  }
 
   return (
     <>
-      <div>
-        {anecdotes[selected]}
-      </div>
+      <Text anec={anecdotes[selected]} vote={counters[selected]} />
+
       <button onClick={() => {
-        const randint = Math.floor(Math.random() * (anecdotes.length - 0)) + 0
-        console.log(randint)
+        const copy = [...counters]
+        copy[selected] += 1
+        setCounters(copy)
+        }}>vote</button>
+
+      <button onClick={() => {
+        const randint = Math.floor(Math.random() * (anecdotes.length - 0))
         setSelected(randint)
-        }}>next anecdote</button>
+      }}>next anecdote</button>
     </>
   )
 }
