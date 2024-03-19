@@ -21,38 +21,30 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when dianosing patients.',
     'The only way to go fast, is to go well.'
   ]
-  let votes = [0, 0, 0, 0, 0, 0, 0, 0]
 
   const [selected, setSelected] = useState(0)
-  const [counters, setCounters] = useState(votes)
-
-  function handleIncrementClick(index) {
-    const nextCounters = counters.map((c, i) => {
-      if (i === index) {
-        // Increment the clicked counter
-        return c + 1;
-      } else {
-        // The rest haven't changed
-        return c;
-      }
-    });
-    setCounters(nextCounters);
-  }
+  const [counters, setCounters] = useState([0, 0, 0, 0, 0, 0, 0, 0])
+  const biggest = counters.reduce((maxIndex, currentValue, currentIndex, array) => currentValue > array[maxIndex] ? currentIndex : maxIndex, 0);
 
   return (
     <>
+      <h1>Anecdote of the day</h1>
       <Text anec={anecdotes[selected]} vote={counters[selected]} />
 
       <button onClick={() => {
         const copy = [...counters]
         copy[selected] += 1
         setCounters(copy)
-        }}>vote</button>
+        console.log(biggest)
+      }}>vote</button>
 
       <button onClick={() => {
         const randint = Math.floor(Math.random() * (anecdotes.length - 0))
         setSelected(randint)
       }}>next anecdote</button>
+
+      <h1>Anecdote with most votes</h1>
+      <Text anec={anecdotes[biggest]} vote={counters[biggest]} />
     </>
   )
 }
