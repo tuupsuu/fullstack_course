@@ -3,7 +3,6 @@ import Filter from './components/Filter'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import personService from './services/persons'
-import axios from "axios"
 
 const App = () => {
 	const [persons, setPersons] = useState([])
@@ -37,6 +36,17 @@ const App = () => {
 			})
 	}
 
+	const removeContact = (per) => {
+		if (window.confirm(`Delete ${per.name}?`)) {
+			personService
+				.remove(per.id)
+				.then(response => response !== "error"
+					? setPersons(persons.filter(person => person.id !== per.id))
+					: console.log(response)
+				)
+		}
+	}
+
 	const handleNameChange = (event) => {
 		setNewName(event.target.value)
 	}
@@ -57,7 +67,7 @@ const App = () => {
 			<PersonForm sub={addContact} name={newName} number={newNumber} nameCh={handleNameChange} numberCh={handleNumberChange} />
 			<h3>Numbers</h3>
 			{persons.filter(person => person.name.includes(filter)).map(person =>
-				<Persons name={person.name} number={person.number} />
+				<Persons key={person.id} person={person} del={removeContact} />
 			)}
 		</div>
 	)
