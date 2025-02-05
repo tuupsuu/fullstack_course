@@ -1,83 +1,74 @@
+require('dotenv').config()
 const express = require('express')
 var morgan = require('morgan')
 const cors = require('cors')
+const mongoose = require('mongoose')
 const app = express()
+const Person = require('./models/person')
 
 app.use(cors())
 app.use(express.json())
 app.use(express.static('dist'))
 app.use(morgan('tiny'))
 
-let persons = [
-	{
-		id: "1",
-		name: "Arto Hellas",
-		number: "040-123456"
-	},
-	{
-		id: "2",
-		name: "Ada Lovelace",
-		number: "39-44-5323523"
-	},
-	{
-		id: "3",
-		name: "Dan Abramov",
-		number: "12-46-234345"
-	},
-	{
-		id: "4",
-		name: "Mary Poppendieck",
-		number: "39-23-6423122"
-	}
-]
+const url = process.env.MONGODB_URI
+
+mongoose.set('strictQuery', false)
+mongoose.connect(url)
 
 app.get('/info', (request, response) => {
-	response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${Date().toString()}</p>`)
+	Person.find({}).then(persons => {
+		response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${Date().toString()}</p>`)
+	})
 })
 
 app.get('/api/persons', (request, response) => {
-	response.json(persons)
+	Person.find({}).then(persons => {
+		response.json(persons)
+	})
 })
 
 app.get('/api/persons/:id', (request, response) => {
-	const id = request.params.id
-	const person = persons.find(note => note.id === id)
-
-	if (person) {
-		response.json(person)
-	} else {
-		response.status(404).end()
-	}
+	Person.find({ id: request.params.id }).then(persons => {
+		response.json(persons)
+	})
 })
 
-app.delete('/api/persons/:id', (request, response) => {
-	const id = request.params.id
-	persons = persons.filter(person => person.id !== id)
-
-	response.status(204).end()
-})
+// app.delete('/api/persons/:id', (request, response) => {
+// 	const id = request.params.id
+// 	persons = persons.filter(person => person.id !== id)
+//
+// 	response.status(204).end()
+// })
 
 app.post('/api/persons', (request, response) => {
-	const rand = Math.floor(Math.random() * 1000000)
-	const person = request.body
-	person['id'] = `${rand}`
-	console.log(person)
-	if (!person.name || person.name.len == 0) {
-		response.json('must have name')
-	} else if (!person.number || person.number.len == 0) {
-		response.json('must have number')
-	} else {
-		if (persons.findIndex(per => per.name == person.name) > 0) {
-			response.json('name must be unique')
-		} else if (persons.findIndex(per => per.number == person.number) > 0) {
-			response.json('number must be unique')
-		} else {
-			persons.push(person)
-			response.json(person)
-		}
+	const reqPer = request.body
+	if (!reqPer.name || reqPer.name.len == 0) {
+		return response.json('must have name')
 	}
+	if (!reqPer.number || reqPer.number.len == 0) {
+		return response.json('must have number')
+	}
+
+	Person.find({}).then(apiPersons => {
+		if (apiPersons.findIndex(per => per.name == reqPer.name) > 0) {
+			return response.json('name must be unique')
+		}
+		if (apiPersons.findIndex(per => per.number == reqPer.number) > 0) {
+			return response.json('number must be unique')
+		}
+
+		const person = new Person({
+			name: reqPer.name,
+			number: reqPer.number,
+		})
+		person.save().then(result => {
+			console.log('person saved')
+			response.json(result)
+		})
+	})
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT)
 console.log(`Server running on port http://localhost:${PORT}`)
