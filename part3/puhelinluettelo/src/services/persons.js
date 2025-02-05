@@ -17,8 +17,13 @@ const remove = id => {
 		.catch(error => "error")
 }
 
+const update = (id, newObject) => {
+	return axios.put(`${baseUrl}/${id}`, newObject)
+}
+
 export default {
 	getAll: getAll,
 	create: create,
-	remove: remove
+	remove: remove,
+	update: update
 }

@@ -25,7 +25,17 @@ const App = () => {
 		const personObject = { name: newName, number: newNumber, }
 
 		if (persons.find((elem) => elem.name == personObject.name)) {
-			alert(`${newName} is already added to phonebook`)
+			let per = persons.find((elem) => elem.name == personObject.name)
+			let perID = per.id
+			personService
+				.update(perID, personObject)
+				.then(response => {
+					setPersons(persons.map(pers => pers.id !== perID ? pers : response.data))
+					setNewName('')
+					setNewNumber('')
+					setNotifMessage(`Added ${personObject.name}`)
+					setTimeout(() => { setNotifMessage(null) }, 5000)
+				})
 			return
 		}
 
