@@ -1,0 +1,3 @@
+- init: `npm init`
+- ajo `node index.js` tai `npm start`
+    - `npm start` toimii vain jos `package.json` sisältää scriptissä `"start": "node index.js"`
