@@ -57,8 +57,20 @@ app.post('/api/persons', (request, response) => {
 	const person = request.body
 	person['id'] = `${rand}`
 	console.log(person)
-	persons.push(person)
-	response.json(person)
+	if (!person.name || person.name.len == 0) {
+		response.json('must have name')
+	} else if (!person.number || person.number.len == 0) {
+		response.json('must have number')
+	} else {
+		if (persons.findIndex(per => per.name == person.name) > 0) {
+			response.json('name must be unique')
+		} else if (persons.findIndex(per => per.number == person.number) > 0) {
+			response.json('number must be unique')
+		} else {
+			persons.push(person)
+			response.json(person)
+		}
+	}
 })
 
 const PORT = 3001
