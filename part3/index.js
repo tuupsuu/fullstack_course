@@ -24,6 +24,10 @@ let notes = [
 	}
 ]
 
+app.get('/info', (request, response) => {
+  response.send(`<p>Phonebook has info for ${notes.length} people</p><p>${Date().toString()}</p>`)
+})
+
 app.get('/api/persons', (request, response) => {
   response.json(notes)
 })
