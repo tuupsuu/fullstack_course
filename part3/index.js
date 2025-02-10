@@ -51,11 +51,11 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 app.post('/api/persons', (request, response, next) => {
 	const reqPer = request.body
-	if (!reqPer.name || reqPer.name.len == 0) {
-		return response.json('must have name')
+	if (!reqPer.name || reqPer.name.length < 3) {
+		return response.status(500).send({ error: `Person validation failed: Name '${reqPer.name}' is shorter than the minimum allowed length, 3.`})
 	}
-	if (!reqPer.number || reqPer.number.len == 0) {
-		return response.json('must have number')
+	if (!reqPer.number || reqPer.number.length == 0) {
+		return response.status(500).send({ error: 'must have number' })
 	}
 
 	Person.find({}).then(apiPersons => {
@@ -75,32 +75,32 @@ app.post('/api/persons', (request, response, next) => {
 			response.json(result)
 		})
 	})
-	.catch(error => next(error))
+		.catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-  const body = request.body
+	const body = request.body
 
-  const person = {
-    name: body.name,
-    number: body.number,
-  }
+	const person = {
+		name: body.name,
+		number: body.number,
+	}
 
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
-    .then(updatedPerson => {
-      response.json(updatedPerson)
-    })
-    .catch(error => next(error))
+	Person.findByIdAndUpdate(request.params.id, person, { new: true })
+		.then(updatedPerson => {
+			response.json(updatedPerson)
+		})
+		.catch(error => next(error))
 })
 
 const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
+	console.error(error.message)
 
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  }
+	if (error.name === 'CastError') {
+		return response.status(400).send({ error: 'malformatted id' })
+	}
 
-  next(error)
+	next(error)
 }
 app.use(errorHandler)
 

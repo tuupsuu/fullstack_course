@@ -33,7 +33,7 @@ const App = () => {
 					setPersons(persons.map(pers => pers.id !== perID ? pers : response.data))
 					setNewName('')
 					setNewNumber('')
-					setNotifMessage(`Added ${personObject.name}`)
+					setNotifMessage(`Updated ${personObject.name}`)
 					setTimeout(() => { setNotifMessage(null) }, 5000)
 				})
 			return
@@ -46,6 +46,10 @@ const App = () => {
 				setNewName('')
 				setNewNumber('')
 				setNotifMessage(`Added ${personObject.name}`)
+				setTimeout(() => { setNotifMessage(null) }, 5000)
+			})
+			.catch(error => {
+				setNotifMessage(error.response.data.error)
 				setTimeout(() => { setNotifMessage(null) }, 5000)
 			})
 	}
