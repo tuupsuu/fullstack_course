@@ -43,7 +43,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
 	Person.findByIdAndDelete(request.params.id)
-		.then(result => {
+		.then(() => {
 			response.status(201).end()
 		})
 		.catch(error => next(error))
@@ -52,17 +52,17 @@ app.delete('/api/persons/:id', (request, response, next) => {
 app.post('/api/persons', (request, response, next) => {
 	const reqPer = request.body
 	if (!reqPer.name || reqPer.name.length < 3) {
-		return response.status(500).send({ error: `Person validation failed: Name '${reqPer.name}' is shorter than the minimum allowed length, 3.`})
+		return response.status(500).send({ error: `Person validation failed: Name '${reqPer.name}' is shorter than the minimum allowed length, 3.` })
 	}
-	if (!reqPer.number || reqPer.number.length == 0) {
+	if (!reqPer.number || reqPer.number.length === 0) {
 		return response.status(500).send({ error: 'must have number' })
 	}
 
 	Person.find({}).then(apiPersons => {
-		if (apiPersons.findIndex(per => per.name == reqPer.name) > 0) {
+		if (apiPersons.findIndex(per => per.name === reqPer.name) > 0) {
 			return response.json('name must be unique')
 		}
-		if (apiPersons.findIndex(per => per.number == reqPer.number) > 0) {
+		if (apiPersons.findIndex(per => per.number === reqPer.number) > 0) {
 			return response.json('number must be unique')
 		}
 
