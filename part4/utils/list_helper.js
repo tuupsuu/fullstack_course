@@ -39,9 +39,29 @@ const mostBlogs = (blogs) => {
 	return { author: most.author, blogs: most.blogs }
 }
 
+const mostLikes = (blogs) => {
+	var authors = new Map()
+	blogs.forEach(blog => {
+		if (authors.get(blog.author) == null) {
+			authors.set(blog.author, blog.likes)
+		} else {
+			authors.set(blog.author, authors.get(blog.author) + blog.likes)
+		}
+	})
+
+	var most = { author: "", likes: 0 }
+	for (let auth of authors.entries()) {
+		if (auth[1] > most.likes) {
+			most = { author: auth[0], likes: auth[1] }
+		}
+	}
+	return { author: most.author, likes: most.likes }
+}
+
 module.exports = {
 	dummy,
 	totalLikes,
 	favoriteBlog,
 	mostBlogs,
+	mostLikes,
 }

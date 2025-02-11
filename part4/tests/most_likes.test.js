@@ -64,24 +64,24 @@ const blogs = [
 	}
 ]
 
-describe('most blogs', () => {
+describe('most likes', () => {
 	test('when list has only one blog equals the same', () => {
-		const result = listHelper.mostBlogs(listWithOneBlog)
+		const result = listHelper.mostLikes(listWithOneBlog)
 		var most = {
 			author: 'Edsger W. Dijkstra',
-			blogs: 1
+			likes: 5
 		}
 		assert.strictEqual(result.author, most.author)
-		assert.strictEqual(result.blogs, most.blogs)
+		assert.strictEqual(result.likes, most.likes)
 	})
 
-	test('when list has multiple blogs equals the most blogged', () => {
-		const result = listHelper.mostBlogs(blogs)
+	test('when list has multiple blogs equals the most liked', () => {
+		const result = listHelper.mostLikes(blogs)
 		var most = {
-			author: "Robert C. Martin",
-			blogs: 3,
+			author: 'Edsger W. Dijkstra',
+			likes: 17,
 		}
 		assert.strictEqual(result.author, most.author)
-		assert.strictEqual(result.blogs, most.blogs)
+		assert.strictEqual(result.likes, most.likes)
 	})
 })
