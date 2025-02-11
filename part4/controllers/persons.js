@@ -45,10 +45,10 @@ personsRouter.post('/', (request, response, next) => {
 
 	Person.find({}).then(apiPersons => {
 		if (apiPersons.findIndex(per => per.name === body.name) > 0) {
-			return response.json('name must be unique')
+			return response.status(500).send({ error: 'name must be unique' })
 		}
 		if (apiPersons.findIndex(per => per.number === body.number) > 0) {
-			return response.json('number must be unique')
+			return response.status(500).send({ error: 'number must be unique' })
 		}
 
 		const person = new Person({
