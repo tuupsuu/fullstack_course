@@ -13,8 +13,6 @@ const totalLikes = (blogs) => {
 const favoriteBlog = (blogs) => {
 	var fav = { title: "", author: "", likes: 0 }
 	blogs.forEach(blog => {
-		// console.log(blog)
-		// console.log(fav)
 		if (blog.likes > fav.likes) {
 			fav = blog
 		}
@@ -22,8 +20,28 @@ const favoriteBlog = (blogs) => {
 	return { title: fav.title, author: fav.author, likes: fav.likes }
 }
 
+const mostBlogs = (blogs) => {
+	var authors = new Map()
+	blogs.forEach(blog => {
+		if (authors.get(blog.author) == null) {
+			authors.set(blog.author, 1)
+		} else {
+			authors.set(blog.author, authors.get(blog.author) + 1)
+		}
+	})
+
+	var most = { author: "", blogs: 0 }
+	for (let auth of authors.entries()) {
+		if (auth[1] > most.blogs) {
+			most = { author: auth[0], blogs: auth[1] }
+		}
+	}
+	return { author: most.author, blogs: most.blogs }
+}
+
 module.exports = {
 	dummy,
 	totalLikes,
 	favoriteBlog,
+	mostBlogs,
 }
