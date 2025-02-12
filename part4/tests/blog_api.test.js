@@ -25,10 +25,10 @@ const blogs = [
 describe('api testing', () => {
 	beforeEach(async () => {
 		await Blog.deleteMany({})
-		let blogObject = new Blog(blogs[0])
-		await blogObject.save()
-		blogObject = new Blog(blogs[1])
-		await blogObject.save()
+		let blogObject = blogs[0]
+		await api.post('/api/blogs/').send(blogObject)
+		blogObject = blogs[1]
+		await api.post('/api/blogs/').send(blogObject)
 	})
 
 	test('there are two blogs', async () => {
@@ -54,15 +54,27 @@ describe('api testing', () => {
 		const res = await api.get('/api/blogs')
 		assert.strictEqual(res.body.length, blogs.length)
 
-		const newBlog = new Blog({
+		const newBlog = {
 			title: "New book",
 			author: "Michael Chani",
 			url: "https://reactpatsdasdasterns.com/",
 			likes: 2,
-		})
-		await newBlog.save()
+		}
+		await api.post('/api/blogs/').send(newBlog)
 		const res2 = await api.get('/api/blogs')
 		assert.strictEqual(res2.body.length, blogs.length + 1)
+	})
+
+	test('if likes is null it is 0', async () => {
+		const newBlog = {
+			title: "New book",
+			author: "Michael Chani",
+			url: "https://reactpatsdasdasterns.com/",
+		}
+		await api.post('/api/blogs/').send(newBlog)
+		const res = await api.get('/api/blogs')
+		console.log(res.body)
+		assert.strictEqual(res.body[2].likes, 0)
 	})
 
 	after(async () => {
