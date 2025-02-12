@@ -93,6 +93,13 @@ describe('api testing', () => {
 			.expect(400)
 	})
 
+	test('blog deletion works', async () => {
+		const res = await api.get('/api/blogs')
+		await api.delete(`/api/blogs/${res.body[0].id}`)
+		const res2 = await api.get('/api/blogs')
+		assert.strictEqual(res2.body.length, 1)
+	})
+
 	after(async () => {
 		await mongoose.connection.close()
 	})
