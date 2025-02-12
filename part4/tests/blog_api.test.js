@@ -100,6 +100,19 @@ describe('api testing', () => {
 		assert.strictEqual(res2.body.length, 1)
 	})
 
+	test('blog updating works', async () => {
+		const res = await api.get('/api/blogs')
+		assert.strictEqual(res.body[0].likes, 7)
+		await api.put(`/api/blogs/${res.body[0].id}`).send({
+			title: "React patterns",
+			author: "Michael Chan",
+			url: "https://reactpatterns.com/",
+			likes: 20,
+		})
+		const res2 = await api.get('/api/blogs')
+		assert.strictEqual(res2.body[0].likes, 20)
+	})
+
 	after(async () => {
 		await mongoose.connection.close()
 	})
