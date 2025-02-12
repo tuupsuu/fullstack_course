@@ -50,6 +50,21 @@ describe('api testing', () => {
 		assert.ok(!('_id' in response.body[0]), 'object should not have _id field')
 	})
 
+	test('blogs can be added', async () => {
+		const res = await api.get('/api/blogs')
+		assert.strictEqual(res.body.length, blogs.length)
+
+		const newBlog = new Blog({
+			title: "New book",
+			author: "Michael Chani",
+			url: "https://reactpatsdasdasterns.com/",
+			likes: 2,
+		})
+		await newBlog.save()
+		const res2 = await api.get('/api/blogs')
+		assert.strictEqual(res2.body.length, blogs.length + 1)
+	})
+
 	after(async () => {
 		await mongoose.connection.close()
 	})
