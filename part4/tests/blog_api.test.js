@@ -22,7 +22,7 @@ const blogs = [
 	},
 ]
 
-describe('api testing', () => {
+describe('blog api testing', () => {
 	beforeEach(async () => {
 		await Blog.deleteMany({})
 		let blogObject = blogs[0]
@@ -37,7 +37,7 @@ describe('api testing', () => {
 		assert.strictEqual(res.body.length, blogs.length)
 	})
 
-	test('the first note is about react patterns', async () => {
+	test('the first blog is about react patterns', async () => {
 		const response = await api.get('/api/blogs')
 
 		assert(response.body[0].title, 'React patterns')
