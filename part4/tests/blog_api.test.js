@@ -43,6 +43,13 @@ describe('api testing', () => {
 		assert(response.body[0].title, 'React patterns')
 	})
 
+	test('blog object id is id not _id', async () => {
+		const response = await api.get('/api/blogs')
+
+		assert(response.body[0].id, !null)
+		assert.ok(!('_id' in response.body[0]), 'object should not have _id field')
+	})
+
 	after(async () => {
 		await mongoose.connection.close()
 	})
