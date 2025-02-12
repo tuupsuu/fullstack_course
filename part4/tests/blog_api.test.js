@@ -54,27 +54,43 @@ describe('api testing', () => {
 		const res = await api.get('/api/blogs')
 		assert.strictEqual(res.body.length, blogs.length)
 
-		const newBlog = {
+		await api.post('/api/blogs/').send({
 			title: "New book",
 			author: "Michael Chani",
 			url: "https://reactpatsdasdasterns.com/",
 			likes: 2,
-		}
-		await api.post('/api/blogs/').send(newBlog)
+		})
 		const res2 = await api.get('/api/blogs')
 		assert.strictEqual(res2.body.length, blogs.length + 1)
 	})
 
 	test('if likes is null it is 0', async () => {
-		const newBlog = {
+		await api.post('/api/blogs/').send({
 			title: "New book",
 			author: "Michael Chani",
 			url: "https://reactpatsdasdasterns.com/",
-		}
-		await api.post('/api/blogs/').send(newBlog)
+		})
 		const res = await api.get('/api/blogs')
-		console.log(res.body)
 		assert.strictEqual(res.body[2].likes, 0)
+	})
+
+	test('if no title or url, return 404', async () => {
+		await api.post('/api/blogs/')
+			.send({
+				title: "New book",
+				url: "https://reactpatsdasdasterns.com/",
+			})
+			.expect(201)
+		await api.post('/api/blogs/')
+			.send({
+				url: "https://reactpatsdasdasterns.com/",
+			})
+			.expect(400)
+		await api.post('/api/blogs/')
+			.send({
+				title: "New book",
+			})
+			.expect(400)
 	})
 
 	after(async () => {
