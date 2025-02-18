@@ -24,24 +24,29 @@ blogsRouter.post('/', async (request, response) => {
 	if (body.title == undefined) { return response.status(400).end() }
 	if (body.url == undefined) { return response.status(400).end() }
 
-	const decodedToken = jwt.verify(getTokenFrom(request), config.SECRET)
-	if (!decodedToken.id) {
-		return response.status(401).json({ error: 'token invalid' })
+	let decodedToken
+	try {
+		decodedToken = jwt.verify(getTokenFrom(request), config.SECRET)
+		if (!decodedToken.id) {
+			return response.status(401).json({ error: 'token invalid' })
+		}
+		const user = await User.findById(decodedToken.id)
+
+		const blog = new Blog({
+			title: body.title,
+			author: body.author,
+			url: body.url,
+			likes: body.likes,
+			user: user._id
+		})
+		const res = await blog.save()
+		user.blogs = user.blogs.concat(res._id)
+		await user.save()
+
+		return response.status(201).json(res)
+	} catch (error) {
+		return response.status(502).end()
 	}
-	const user = await User.findById(decodedToken.id)
-
-	const blog = new Blog({
-		title: body.title,
-		author: body.author,
-		url: body.url,
-		likes: body.likes,
-		user: user._id
-	})
-	const res = await blog.save()
-	user.blogs = user.blogs.concat(res._id)
-	await user.save()
-
-	return response.status(201).json(res)
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
